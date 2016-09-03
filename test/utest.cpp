@@ -46,6 +46,26 @@ void UTest::inserction_sort()
 	puts("");
 }
 
+void UTest::merge_sort()
+{
+	int a[] = {10, 3, 6, 1, 5, 9, 9, 10, -9, 10, 432, 1, 19};
+	puts("before merge sort:");
+	for (int i = 0; i < sizeof(a)/sizeof(int); ++i)
+	{
+		printf("%d ", a[i]);
+	}
+	puts("");
+	
+	puts("after merge sort:");
+	alg_merge_sort(a, sizeof(int), sizeof(a)/sizeof(int), cmp_int);
+	for (int i = 0; i < sizeof(a)/sizeof(int); ++i)
+	{
+		printf("%d ", a[i]);
+	}
+	puts("");
+}
+
+
 int main(int argc, char *argv[])
 {
 	CppUnit::TextUi::TestRunner runner;
