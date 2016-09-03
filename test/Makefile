@@ -1,6 +1,6 @@
 ROOTDIR:= ..
 
-LDFLAGS+= -lrt -lcppunit
+LDFLAGS+= -lrt -lcppunit -L $(ROOTDIR)/lib -lalg
 
 TARGET:= test.out
 

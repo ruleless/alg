@@ -1,5 +1,3 @@
-dirs:= kmem
-dirs+= core cmd build
-dirs+= asyncnet
+dirs= src test
 
 include build.mak
