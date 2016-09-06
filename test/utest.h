@@ -9,6 +9,7 @@ class UTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE(UTest);
 	CPPUNIT_TEST(inserction_sort);
 	CPPUNIT_TEST(merge_sort);
+	CPPUNIT_TEST(quick_sort);
 	CPPUNIT_TEST_SUITE_END();
   public:
     UTest();
@@ -20,6 +21,7 @@ class UTest : public CppUnit::TestFixture
 
 	void inserction_sort();
 	void merge_sort();
+	void quick_sort();
 };
 
 #endif // __UTEST_H__

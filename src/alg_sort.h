@@ -13,6 +13,9 @@ void alg_inserction_sort(void *base, size_t nmem, size_t nsize,
 void alg_merge_sort(void *base, size_t nmem, size_t nsize,
 					int (*cmp)(void *, void *));
 
+void alg_quick_sort(void *base, size_t nmem, size_t nsize,
+					int (*cmp)(void *, void *));
+
 #ifdef __cplusplus
 }
 #endif

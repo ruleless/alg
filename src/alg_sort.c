@@ -63,4 +63,41 @@ void alg_merge_sort(void *base, size_t nmem, size_t nsize,
 					int (*cmp)(void *, void *)) {
 	if (nsize > 0)
 		merge_sort(base, nmem, 0, nsize-1, cmp);
-}   				
+}
+
+static size_t partion(void *base, size_t nmem, size_t l, size_t r,
+					  int (*cmp)(void *, void *)) {
+	char *ptr = base, *key = (char *)malloc(nmem);
+	memcpy(key, ptr+r*nmem, nmem);
+	
+	while (l < r) {
+		while (l < r && cmp(ptr+l*nmem, key) <= 0)
+			++l;
+		if (l < r)
+			memcpy(ptr+r*nmem, ptr+l*nmem, nmem);
+
+		while (l < r && cmp(ptr+r*nmem, key) > 0)
+			--r;
+		if (l < r)
+			memcpy(ptr+l*nmem, ptr+r*nmem, nmem);
+	}
+
+	memcpy(ptr+l*nmem, key, nmem);
+	return l;
+}
+
+static void quick_sort(void *base, size_t nmem, size_t l, size_t r,
+					   int (*cmp)(void *, void *)) {
+	if (l >= r)
+		return;
+	
+	size_t m = partion(base, nmem, l, r, cmp);
+	quick_sort(base, nmem, l, m-1, cmp);
+	quick_sort(base, nmem, m+1, r, cmp);
+}
+
+void alg_quick_sort(void *base, size_t nmem, size_t nsize,
+					int (*cmp)(void *, void *)) {
+	if (nsize > 0)
+		quick_sort(base, nmem, 0, nsize-1, cmp);
+}
