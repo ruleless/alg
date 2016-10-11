@@ -7,6 +7,13 @@
 extern "C" {
 #endif
 
+/**
+ * alg_inserction_sort - inserction sort
+ * @base:  the first element's pointer of the array
+ * @nmen:  element's size in byte
+ * @nsize: the num of elements
+ * @cmp:   the compair function define by user
+ */
 void alg_inserction_sort(void *base, size_t nmem, size_t nsize,
 						 int (*cmp)(void *, void *));
 

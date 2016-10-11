@@ -95,7 +95,8 @@ static void quick_sort(void *base, size_t nmem, size_t l, size_t r,
 		return;
 	
 	size_t m = partion(base, nmem, l, r, cmp, ext_storage);
-	quick_sort(base, nmem, l, m-1, cmp, ext_storage);
+	if (m > 0)
+		quick_sort(base, nmem, l, m-1, cmp, ext_storage);
 	quick_sort(base, nmem, m+1, r, cmp, ext_storage);
 }
 
