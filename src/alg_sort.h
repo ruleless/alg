@@ -17,9 +17,15 @@ extern "C" {
 void alg_inserction_sort(void *base, size_t nmem, size_t nsize,
 						 int (*cmp)(void *, void *));
 
+/**
+ * alg_merge_sort - merge sort
+ */
 void alg_merge_sort(void *base, size_t nmem, size_t nsize,
 					int (*cmp)(void *, void *));
 
+/**
+ * alg_quick_sort - quick sort
+ */
 void alg_quick_sort(void *base, size_t nmem, size_t nsize,
 					int (*cmp)(void *, void *));
 
