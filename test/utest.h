@@ -4,6 +4,8 @@
 #include "cppunit/TestFixture.h"
 #include "cppunit/extensions/HelperMacros.h"
 
+#include "../src/bitset.h"
+
 struct SortNode
 {
 	int key;
@@ -39,6 +41,7 @@ class UTest : public CppUnit::TestFixture
   private:		
 	SortNode *mArray;
 	int mArraySz;
+	bitset *mBitset;
 };
 
 #endif // __UTEST_H__

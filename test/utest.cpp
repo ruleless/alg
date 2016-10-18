@@ -22,6 +22,8 @@ UTest::~UTest()
 	
 void UTest::setUp()
 {
+	mBitset = bitset_new();
+	
 	srand(time(NULL));
 	mArraySz = 0;	
 	while (mArraySz <= 0)
@@ -29,7 +31,8 @@ void UTest::setUp()
 
 	mArray = (SortNode *)malloc(mArraySz*sizeof(SortNode));
 	for (int i = 0; i < mArraySz; ++i)
-	{
+	{				
+		bitset_set(mBitset, i);
 		mArray[i].key = rand();
 		mArray[i].id = i;
 	}
@@ -37,6 +40,8 @@ void UTest::setUp()
 	
 void UTest::tearDown()
 {
+	bitset_destroy(mBitset);
+	
 	free(mArray);
 	mArray = NULL;
 	mArraySz = 0;
@@ -53,6 +58,8 @@ void UTest::inserction_sort()
 	for (int i = 0; i < mArraySz-1; ++i)
 	{
 		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+		bitset_clear(mBitset, mArray[i].id);
 	}
 }
 
@@ -62,6 +69,8 @@ void UTest::merge_sort()
 	for (int i = 0; i < mArraySz-1; ++i)
 	{
 		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+		bitset_clear(mBitset, mArray[i].id);
 	}
 }
 
@@ -71,6 +80,8 @@ void UTest::quick_sort()
 	for (int i = 0; i < mArraySz-1; ++i)
 	{
 		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+		bitset_clear(mBitset, mArray[i].id);
 	}
 }
 
@@ -160,16 +171,16 @@ void UTest::test_list()
 void UTest::test_bitset()
 {
 	bitset *b = bitset_new();
-	for (int i = 0; i < 8000; ++i)
+	uint maxn = 10000000;
+	for (int i = 0; i < maxn; ++i)
 	{
 		bitset_set(b, i);
-	}
-	for (int i = 0; i < 8000; ++i)
-	{
 		CPPUNIT_ASSERT(bitset_exists(b, i));
 	}
-	for (int i = 9000; i < 10000; ++i)
+	
+	for (int i = 0; i < maxn; ++i)
 	{
+		bitset_clear(b, i);
 		CPPUNIT_ASSERT(!bitset_exists(b, i));
 	}
 }

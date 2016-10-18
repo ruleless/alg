@@ -14,8 +14,12 @@ static int bitset_extend(bitset *b, uint sz) {
 	if (sz < (b->array_size << 1) && b->array_size < 65536) {
 		new_sz = b->array_size << 1;
 	}
+	new_sz = max(new_sz, 256);
 
-	b->bit_array = realloc(b->bit_array, new_sz*sizeof(uint));
+	if (NULL == b->bit_array)		
+		b->bit_array = malloc(new_sz*sizeof(uint));
+	else
+		b->bit_array = realloc(b->bit_array, new_sz*sizeof(uint));
 	if (NULL == b->bit_array)
 		return 0;
 
