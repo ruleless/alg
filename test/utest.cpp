@@ -1,6 +1,7 @@
 #include "utest.h"
 
 #include "../src/alg_sort.h"
+#include "../src/alg_heap.h"
 #include "../src/list.h"
 #include "../src/bitset.h"
 
@@ -77,6 +78,17 @@ void UTest::merge_sort()
 void UTest::quick_sort()
 {	
 	alg_quick_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+	for (int i = 0; i < mArraySz-1; ++i)
+	{
+		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+		bitset_clear(mBitset, mArray[i].id);
+	}
+}
+
+void UTest::heap_sort()
+{
+	alg_heap_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
 	for (int i = 0; i < mArraySz-1; ++i)
 	{
 		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -171,7 +183,7 @@ void UTest::test_list()
 void UTest::test_bitset()
 {
 	bitset *b = bitset_new();
-	uint maxn = 10000000;
+	uint maxn = 1000000;
 	for (int i = 0; i < maxn; ++i)
 	{
 		bitset_set(b, i);
