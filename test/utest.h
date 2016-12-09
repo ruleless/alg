@@ -21,6 +21,8 @@ class UTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(heap_sort);
 	CPPUNIT_TEST(test_list);
 	CPPUNIT_TEST(test_bitset);	
+	CPPUNIT_TEST(test_dcache);
+	CPPUNIT_TEST(test_cache);	
 	CPPUNIT_TEST_SUITE_END();
 	
   public:
@@ -39,6 +41,9 @@ class UTest : public CppUnit::TestFixture
 	void test_list();
 
 	void test_bitset();
+
+	void test_dcache();
+	void test_cache();
 
   private:		
 	SortNode *mArray;

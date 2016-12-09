@@ -4,6 +4,8 @@
 #include "../src/alg_heap.h"
 #include "../src/list.h"
 #include "../src/bitset.h"
+#include "../src/alg_cache.h"
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -124,7 +126,7 @@ void UTest::test_list()
 	// test insert
 	struct list_head l1 = LIST_HEAD_INIT(l1);
 	int i = 0;
-	for (i = 0; i < sizeof(array_to_test_list)/sizeof(int); i++)
+	for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
 	{
 		LNode *n = new LNode;
 		n->a = array_to_test_list[i];
@@ -133,7 +135,7 @@ void UTest::test_list()
 	}
 
 	struct list_head l2 = LIST_HEAD_INIT(l2);
-	for (i = 0; i < sizeof(array_to_test_list)/sizeof(int); i++)
+	for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
 	{
 		LNode *n = new LNode;
 		n->a = array_to_test_list[i];
@@ -184,17 +186,76 @@ void UTest::test_bitset()
 {
 	bitset *b = bitset_new();
 	uint maxn = 1000000;
-	for (int i = 0; i < maxn; ++i)
+	for (uint i = 0; i < maxn; ++i)
 	{
 		bitset_set(b, i);
 		CPPUNIT_ASSERT(bitset_exists(b, i));
 	}
 	
-	for (int i = 0; i < maxn; ++i)
+	for (uint i = 0; i < maxn; ++i)
 	{
 		bitset_clear(b, i);
 		CPPUNIT_ASSERT(!bitset_exists(b, i));
 	}
+}
+
+void UTest::test_dcache()
+{
+	const char *strs[] = {
+		"test1",
+		"test23",
+		"fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
+		"jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
+	};
+
+	alg_disk_cache_t dcache;
+	dcache.file = NULL;
+	for (int i = 0; i < (int)sizeof(strs)/(int)sizeof(const char *); ++i)
+	{
+		alg_disk_cache_write(&dcache, strs[i], strlen(strs[i]));
+	}
+
+	char *ptr = NULL;
+	int i = 0;
+	ssize_t sz = 0;	
+	while ((sz = alg_disk_cache_peeksize(&dcache)) > 0)
+	{
+		ptr = (char *)malloc(sz);
+		alg_disk_cache_read(&dcache, ptr, sz);
+		CPPUNIT_ASSERT(memcmp(ptr, strs[i++], sz) == 0);
+	}
+}
+
+static const char *s_test_str[] = {
+	"test1",
+	"test23",
+	"fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
+	"jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
+	"中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",	
+};
+
+static int s_test_index = 0;
+
+int test_cache_handler(const void *data, size_t size)
+{
+	CPPUNIT_ASSERT(memcmp(data, s_test_str[s_test_index++], size) == 0);
+}
+
+void UTest::test_cache()
+{
+	alg_cache_t *c = alg_cache_create(test_cache_handler);
+
+	c->memcache_maxsize = 10;
+	s_test_index = 0;	
+	
+	for (int i = 0; i < (int)sizeof(s_test_str)/(int)sizeof(const char *); ++i)
+	{
+		alg_cache_push(c, s_test_str[i], strlen(s_test_str[i]));
+	}
+
+	alg_cache_flushall(c);
+	
+	alg_cache_destroy(c);
 }
 //--------------------------------------------------------------------------
 
