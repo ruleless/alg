@@ -22,249 +22,260 @@ UTest::UTest()
 
 UTest::~UTest()
 {}
-	
+    
 void UTest::setUp()
 {
-	mBitset = bitset_new();
-	
-	srand(time(NULL));
-	mArraySz = 0;	
-	while (mArraySz <= 0)
-		mArraySz = rand()%65535;
+    mBitset = bitset_new();
+    
+    srand(time(NULL));
+    mArraySz = 0;   
+    while (mArraySz <= 0)
+        mArraySz = rand()%65535;
 
-	mArray = (SortNode *)malloc(mArraySz*sizeof(SortNode));
-	for (int i = 0; i < mArraySz; ++i)
-	{				
-		bitset_set(mBitset, i);
-		mArray[i].key = rand();
-		mArray[i].id = i;
-	}
+    mArray = (SortNode *)malloc(mArraySz*sizeof(SortNode));
+    for (int i = 0; i < mArraySz; ++i)
+    {               
+        bitset_set(mBitset, i);
+        mArray[i].key = rand();
+        mArray[i].id = i;
+    }
 }
-	
+    
 void UTest::tearDown()
 {
-	bitset_destroy(mBitset);
-	
-	free(mArray);
-	mArray = NULL;
-	mArraySz = 0;
+    bitset_destroy(mBitset);
+    
+    free(mArray);
+    mArray = NULL;
+    mArraySz = 0;
 }
 
 static int cmp_int(void *a, void *b)
 {
-	SortNode *sa = (SortNode *)a, *sb = (SortNode *)b;	
-	return sa->key - sb->key;
+    SortNode *sa = (SortNode *)a, *sb = (SortNode *)b;  
+    return sa->key - sb->key;
 }
 void UTest::inserction_sort()
-{	
-	alg_inserction_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
-	for (int i = 0; i < mArraySz-1; ++i)
-	{
-		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
-		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
-		bitset_clear(mBitset, mArray[i].id);
-	}
+{   
+    alg_inserction_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    for (int i = 0; i < mArraySz-1; ++i)
+    {
+        CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+        CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+        bitset_clear(mBitset, mArray[i].id);
+    }
 }
 
 void UTest::merge_sort()
-{	
-	alg_merge_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
-	for (int i = 0; i < mArraySz-1; ++i)
-	{
-		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
-		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
-		bitset_clear(mBitset, mArray[i].id);
-	}
+{   
+    alg_merge_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    for (int i = 0; i < mArraySz-1; ++i)
+    {
+        CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+        CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+        bitset_clear(mBitset, mArray[i].id);
+    }
 }
 
 void UTest::quick_sort()
-{	
-	alg_quick_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
-	for (int i = 0; i < mArraySz-1; ++i)
-	{
-		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
-		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
-		bitset_clear(mBitset, mArray[i].id);
-	}
+{   
+    alg_quick_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    for (int i = 0; i < mArraySz-1; ++i)
+    {
+        CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+        CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+        bitset_clear(mBitset, mArray[i].id);
+    }
 }
 
 void UTest::heap_sort()
 {
-	alg_heap_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
-	for (int i = 0; i < mArraySz-1; ++i)
-	{
-		CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
-		CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
-		bitset_clear(mBitset, mArray[i].id);
-	}
+    alg_heap_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    for (int i = 0; i < mArraySz-1; ++i)
+    {
+        CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
+        CPPUNIT_ASSERT(bitset_exists(mBitset, mArray[i].id));
+        bitset_clear(mBitset, mArray[i].id);
+    }
 }
 
 struct LNode
 {
-	int a;
+    int a;
     struct list_head list;
 };
 static int array_to_test_list[] = {
-	1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
-	11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-	11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
-	1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
-	11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-	11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
-	1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
-	11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-	11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
-	1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
-	11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-	11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
-	1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
-	11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-	11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92, 
+    1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
+    11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
+    1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
+    11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
+    1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
+    11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
+    1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
+    11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
+    1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
+    11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92, 
 };
 void UTest::test_list()
 {
-	// test insert
-	struct list_head l1 = LIST_HEAD_INIT(l1);
-	int i = 0;
-	for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
-	{
-		LNode *n = new LNode;
-		n->a = array_to_test_list[i];
-		INIT_LIST_HEAD(&n->list);
-		list_add(&n->list, &l1);
-	}
+    // test insert
+    struct list_head l1 = LIST_HEAD_INIT(l1);
+    int i = 0;
+    for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
+    {
+        LNode *n = new LNode;
+        n->a = array_to_test_list[i];
+        INIT_LIST_HEAD(&n->list);
+        list_add(&n->list, &l1);
+    }
 
-	struct list_head l2 = LIST_HEAD_INIT(l2);
-	for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
-	{
-		LNode *n = new LNode;
-		n->a = array_to_test_list[i];
-		INIT_LIST_HEAD(&n->list);
-		list_add_tail(&n->list, &l2);
-	}
+    struct list_head l2 = LIST_HEAD_INIT(l2);
+    for (i = 0; i < (int)sizeof(array_to_test_list)/(int)sizeof(int); i++)
+    {
+        LNode *n = new LNode;
+        n->a = array_to_test_list[i];
+        INIT_LIST_HEAD(&n->list);
+        list_add_tail(&n->list, &l2);
+    }
 
-	struct list_head *pos, *next;
-	i = sizeof(array_to_test_list)/sizeof(int)-1;
-	list_for_each_safe(pos, next, &l1)
-	{
-		struct LNode *n = list_entry(pos, LNode, list);
-		CPPUNIT_ASSERT(i >= 0 && n->a == array_to_test_list[i--]);
-	}
-	CPPUNIT_ASSERT(i == -1);
+    struct list_head *pos, *next;
+    i = sizeof(array_to_test_list)/sizeof(int)-1;
+    list_for_each_safe(pos, next, &l1)
+    {
+        struct LNode *n = list_entry(pos, LNode, list);
+        CPPUNIT_ASSERT(i >= 0 && n->a == array_to_test_list[i--]);
+    }
+    CPPUNIT_ASSERT(i == -1);
 
-	i = 0;
-	list_for_each_safe(pos, next, &l2)
-	{
-		struct LNode *n = list_entry(pos, LNode, list);
-		CPPUNIT_ASSERT(n->a == array_to_test_list[i++]);
-	}
-	CPPUNIT_ASSERT(i == sizeof(array_to_test_list)/sizeof(int));
+    i = 0;
+    list_for_each_safe(pos, next, &l2)
+    {
+        struct LNode *n = list_entry(pos, LNode, list);
+        CPPUNIT_ASSERT(n->a == array_to_test_list[i++]);
+    }
+    CPPUNIT_ASSERT(i == sizeof(array_to_test_list)/sizeof(int));
 
-	// test delete
-	i = 0;
-	list_for_each_prev_safe(pos, next, &l1)
-	{
-		struct LNode *n = list_entry(pos, LNode, list);
-		CPPUNIT_ASSERT(n->a == array_to_test_list[i++]);
-		list_del(&n->list);
-		free(n);
-	}
-	CPPUNIT_ASSERT(list_empty(&l1));
+    // test delete
+    i = 0;
+    list_for_each_prev_safe(pos, next, &l1)
+    {
+        struct LNode *n = list_entry(pos, LNode, list);
+        CPPUNIT_ASSERT(n->a == array_to_test_list[i++]);
+        list_del(&n->list);
+        free(n);
+    }
+    CPPUNIT_ASSERT(list_empty(&l1));
 
-	i = sizeof(array_to_test_list)/sizeof(int)-1;
-	list_for_each_prev_safe(pos, next, &l2)
-	{
-		struct LNode *n = list_entry(pos, LNode, list);
-		CPPUNIT_ASSERT(n->a == array_to_test_list[i--]);
-		list_del(&n->list);
-		free(n);
-	}
-	CPPUNIT_ASSERT(list_empty(&l2));
+    i = sizeof(array_to_test_list)/sizeof(int)-1;
+    list_for_each_prev_safe(pos, next, &l2)
+    {
+        struct LNode *n = list_entry(pos, LNode, list);
+        CPPUNIT_ASSERT(n->a == array_to_test_list[i--]);
+        list_del(&n->list);
+        free(n);
+    }
+    CPPUNIT_ASSERT(list_empty(&l2));
 }
 
 void UTest::test_bitset()
 {
-	bitset *b = bitset_new();
-	uint maxn = 1000000;
-	for (uint i = 0; i < maxn; ++i)
-	{
-		bitset_set(b, i);
-		CPPUNIT_ASSERT(bitset_exists(b, i));
-	}
-	
-	for (uint i = 0; i < maxn; ++i)
-	{
-		bitset_clear(b, i);
-		CPPUNIT_ASSERT(!bitset_exists(b, i));
-	}
+    bitset *b = bitset_new();
+    uint maxn = 1000000;
+    for (uint i = 0; i < maxn; ++i)
+    {
+        bitset_set(b, i);
+        CPPUNIT_ASSERT(bitset_exists(b, i));
+    }
+    
+    for (uint i = 0; i < maxn; ++i)
+    {
+        bitset_clear(b, i);
+        CPPUNIT_ASSERT(!bitset_exists(b, i));
+    }
 }
 
 void UTest::test_dcache()
 {
-	const char *strs[] = {
-		"test1",
-		"test23",
-		"fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
-		"jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
-	};
+    const char *strs[] = {
+        "test1",
+        "test23",
+        "fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
+        "jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
+    };
 
-	alg_disk_cache_t dcache;
-	dcache.file = NULL;
-	for (int i = 0; i < (int)sizeof(strs)/(int)sizeof(const char *); ++i)
-	{
-		alg_disk_cache_write(&dcache, strs[i], strlen(strs[i]));
-	}
+    alg_disk_cache_t dcache;
+    dcache.file = NULL;
+    for (int i = 0; i < (int)sizeof(strs)/(int)sizeof(const char *); ++i)
+    {
+        alg_disk_cache_write(&dcache, strs[i], strlen(strs[i]));
+    }
 
-	char *ptr = NULL;
-	int i = 0;
-	ssize_t sz = 0;	
-	while ((sz = alg_disk_cache_peeksize(&dcache)) > 0)
-	{
-		ptr = (char *)malloc(sz);
-		alg_disk_cache_read(&dcache, ptr, sz);
-		CPPUNIT_ASSERT(memcmp(ptr, strs[i++], sz) == 0);
-	}
+    char *ptr = NULL;
+    int i = 0;
+    ssize_t sz = 0; 
+    while ((sz = alg_disk_cache_peeksize(&dcache)) > 0)
+    {
+        ptr = (char *)malloc(sz);
+        alg_disk_cache_read(&dcache, ptr, sz);
+        CPPUNIT_ASSERT(memcmp(ptr, strs[i++], sz) == 0);
+    }
 }
 
 static const char *s_test_str[] = {
-	"test1",
-	"test23",
-	"fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
-	"jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
-	"中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",	
+    "test1",
+    "test23",
+    "fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
+    "jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
+    "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试", 
 };
 
 static int s_test_index = 0;
 
 int test_cache_handler(const void *data, size_t size)
 {
-	CPPUNIT_ASSERT(memcmp(data, s_test_str[s_test_index++], size) == 0);
+    CPPUNIT_ASSERT(memcmp(data, s_test_str[s_test_index++], size) == 0);
+    return 1;
+}
+
+void *cache_alloc(void *, size_t sz)
+{
+    return malloc(sz);
+}
+
+void cache_dealloc(void *, void *p)
+{
+    free(p);
 }
 
 void UTest::test_cache()
 {
-	alg_cache_t *c = alg_cache_create(test_cache_handler);
+    alg_cache_t *c = alg_cache_create(test_cache_handler, cache_alloc, cache_dealloc, NULL);
 
-	c->memcache_maxsize = 10;
-	s_test_index = 0;	
-	
-	for (int i = 0; i < (int)sizeof(s_test_str)/(int)sizeof(const char *); ++i)
-	{
-		alg_cache_push(c, s_test_str[i], strlen(s_test_str[i]));
-	}
+    c->memcache_maxsize = 10;
+    s_test_index = 0;   
+    
+    for (int i = 0; i < (int)sizeof(s_test_str)/(int)sizeof(const char *); ++i)
+    {
+        alg_cache_push(c, s_test_str[i], strlen(s_test_str[i]));
+    }
 
-	alg_cache_flushall(c);
-	
-	alg_cache_destroy(c);
+    alg_cache_flushall(c);
+    
+    alg_cache_destroy(c);
 }
 //--------------------------------------------------------------------------
 
 
 int main(int argc, char *argv[])
 {
-	CppUnit::TextUi::TestRunner runner;
-	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-	runner.run();
-	exit(0);
+    CppUnit::TextUi::TestRunner runner;
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+    runner.run();
+    exit(0);
 }
 
