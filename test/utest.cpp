@@ -236,7 +236,7 @@ static const char *s_test_str[] = {
 
 static int s_test_index = 0;
 
-int test_cache_handler(const void *data, size_t size)
+int test_cache_handler(alg_cache_t *c, const void *data, size_t size)
 {
     CPPUNIT_ASSERT(memcmp(data, s_test_str[s_test_index++], size) == 0);
     return 1;

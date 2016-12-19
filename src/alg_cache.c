@@ -115,7 +115,7 @@ alg_cache_flushall(alg_cache_t *cache)
     {
         seg = list_entry(pos, alg_cache_seg_t, node);
 
-        if (cache->handler(seg->data, seg->size)) {
+        if (cache->handler(cache, seg->data, seg->size)) {
             list_del(&seg->node);
             cache->dealloc(cache->alloc_ctx, seg->data);            
             cache->dealloc(cache->alloc_ctx, seg);
@@ -132,7 +132,7 @@ alg_cache_flushall(alg_cache_t *cache)
         assert(ptr && "alg_cache_flushall()  alloc failed!");
         assert(alg_disk_cache_read(&cache->dcache, ptr, sz) == sz);
 
-        if (cache->handler(ptr, sz)) {          
+        if (cache->handler(cache, ptr, sz)) {          
             cache->dcache_size -= sz;
             cache->dealloc(cache->alloc_ctx, ptr);
         } else {
