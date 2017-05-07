@@ -314,6 +314,39 @@ void UTest::test_replace_str()
     strncpy(buf, "any word", sizeof(buf)-1);
     CPPUNIT_ASSERT(alg_replace(buf, sizeof(buf), "tttt", "") == buf);
 }
+
+struct WildcardMatchTestNode
+{
+    const char *str;
+    const char *patt;
+    BOOL ret;
+};
+void UTest::test_wildcard_match()
+{
+    WildcardMatchTestNode TESTING_CASE[] = {
+        {"you are a fuck", "*", TRUE},
+        {"you are a fuck", "you*", TRUE},
+        {"you are a fuck", "you are a fuck", TRUE},
+        {"you are a fuck", "you are ? fuck", TRUE},
+        {"you are a fuck", "you are ? fuck?", FALSE},
+        {"you are a fuck", "you are*fuck", TRUE},
+        {NULL, NULL, FALSE},
+    };
+
+    for (int i = 0; TESTING_CASE[i].str; i++)
+    {
+        WildcardMatchTestNode *n = &TESTING_CASE[i];
+        BOOL ret = alg_wildcard_match(n->str, n->patt);
+
+        if (ret != n->ret)
+        {
+            printf("unpassed case!\nstr:%s\npattern:%s\n",
+                   n->str, n->patt);
+        }
+
+        CPPUNIT_ASSERT(ret == n->ret);
+    }
+}
 //--------------------------------------------------------------------------
 
 

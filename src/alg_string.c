@@ -31,3 +31,40 @@ alg_replace(char *buf, int buflen, const char *substr, const char *newstr)
 
     return preptr;
 }
+
+BOOL
+alg_wildcard_match(const char *str, const char *pattern)
+{
+    switch (*pattern)
+    {
+    case '?':
+        if (*str)
+        {
+            return alg_wildcard_match(str+1, pattern+1);
+        }
+        else
+        {
+            return FALSE;
+        }
+    case '*':
+        if (*str)
+        {
+            return alg_wildcard_match(str+1, pattern);
+        }
+        else
+        {
+            return TRUE;
+        }
+    case '\0':
+        return '\0' == *str;
+    default:
+        if (*str == *pattern)
+        {
+            return alg_wildcard_match(str+1, pattern+1);
+        }
+        else
+        {
+            return FALSE;
+        }
+    }    
+}
