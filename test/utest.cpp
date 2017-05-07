@@ -5,6 +5,7 @@
 #include "../src/list.h"
 #include "../src/bitset.h"
 #include "../src/alg_cache.h"
+#include "../src/alg_string.h"
 
 
 #include <stdio.h>
@@ -267,6 +268,51 @@ void UTest::test_cache()
     alg_cache_flushall(c);
     
     alg_cache_destroy(c);
+}
+
+struct ReplaceNode
+{
+    const char *source;
+    const char *substr;
+    const char *newstr;
+    const char *target;
+};
+void UTest::test_replace_str()
+{
+    ReplaceNode TESTING_CASE[] = {
+        {"you are a fuck!", "you are", "he is", "he is a fuck!"},
+        {"you are a fuck!", "you", "", " are a fuck!"},
+        {
+            "a random string should be replaced!",
+            "r", "bbb",
+            "a bbbandom stbbbing should be bbbeplaced!",
+        },
+        {NULL, NULL, NULL, NULL},
+    };
+
+    ReplaceNode *n;
+    char buf[256];
+
+    for (int i = 0; TESTING_CASE[i].source; i++)
+    {
+        n = &TESTING_CASE[i];
+        
+        strncpy(buf, n->source, sizeof(buf)-1);
+        buf[sizeof(buf)-1] = '\0';
+
+        alg_replace(buf, sizeof(buf), n->substr, n->newstr);
+
+        int cmpret = strcmp(buf, n->target);
+        if (cmpret != 0)
+        {
+            printf("src:%s\nbeing:%s", n->source, buf);
+        }
+        
+        CPPUNIT_ASSERT(cmpret == 0);        
+    }
+
+    strncpy(buf, "any word", sizeof(buf)-1);
+    CPPUNIT_ASSERT(alg_replace(buf, sizeof(buf), "tttt", "") == buf);
 }
 //--------------------------------------------------------------------------
 
