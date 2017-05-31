@@ -2,5 +2,7 @@ ROOTDIR:= ..
 
 LIB:= libalg.a
 LIBPATH:= $(ROOTDIR)/lib
+CXXFLAGS+= -D_ALG_PROFILER
+CFLAGS+= -D_ALG_PROFILER
 
 include $(ROOTDIR)/cbuild.mak

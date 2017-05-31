@@ -6,6 +6,7 @@
 #include "../src/bitset.h"
 #include "../src/alg_cache.h"
 #include "../src/alg_string.h"
+#include "../src/alg_profiler.h"
 
 
 #include <stdio.h>
@@ -26,12 +27,18 @@ UTest::~UTest()
     
 void UTest::setUp()
 {
-    mBitset = bitset_new();
+    ALG_PROFILER_START;
     
+    mBitset = bitset_new();
+
+#if 0
     srand(time(NULL));
-    mArraySz = 0;   
+    mArraySz = 0;    
     while (mArraySz <= 0)
         mArraySz = rand()%65535;
+#else
+    mArraySz = 10000;
+#endif
 
     mArray = (SortNode *)malloc(mArraySz*sizeof(SortNode));
     for (int i = 0; i < mArraySz; ++i)
@@ -40,15 +47,21 @@ void UTest::setUp()
         mArray[i].key = rand();
         mArray[i].id = i;
     }
+
+    ALG_PROFILER_END;
 }
     
 void UTest::tearDown()
 {
+    ALG_PROFILER_START;
+    
     bitset_destroy(mBitset);
     
     free(mArray);
     mArray = NULL;
     mArraySz = 0;
+
+    ALG_PROFILER_END;
 }
 
 static int cmp_int(void *a, void *b)
@@ -57,8 +70,11 @@ static int cmp_int(void *a, void *b)
     return sa->key - sb->key;
 }
 void UTest::inserction_sort()
-{   
+{
+    ALG_PROFILER_START;
     alg_inserction_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    ALG_PROFILER_END;
+
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -68,8 +84,11 @@ void UTest::inserction_sort()
 }
 
 void UTest::merge_sort()
-{   
+{
+    ALG_PROFILER_START;
     alg_merge_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    ALG_PROFILER_END;
+    
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -79,8 +98,11 @@ void UTest::merge_sort()
 }
 
 void UTest::quick_sort()
-{   
+{
+    ALG_PROFILER_START;
     alg_quick_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    ALG_PROFILER_END;
+    
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -91,7 +113,10 @@ void UTest::quick_sort()
 
 void UTest::heap_sort()
 {
+    ALG_PROFILER_START;
     alg_heap_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
+    ALG_PROFILER_END;
+    
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -184,20 +209,27 @@ void UTest::test_list()
 }
 
 void UTest::test_bitset()
-{
+{    
     bitset *b = bitset_new();
     uint maxn = 1000000;
+
+    ALG_PROFILER_START;
     for (uint i = 0; i < maxn; ++i)
     {
+        ALG_PROFILER_START;
         bitset_set(b, i);
         CPPUNIT_ASSERT(bitset_exists(b, i));
+        ALG_PROFILER_END;
     }
-    
+    ALG_PROFILER_END;
+
+    ALG_PROFILER_START;
     for (uint i = 0; i < maxn; ++i)
     {
         bitset_clear(b, i);
         CPPUNIT_ASSERT(!bitset_exists(b, i));
     }
+    ALG_PROFILER_END;
 }
 
 void UTest::test_dcache()
@@ -355,6 +387,7 @@ int main(int argc, char *argv[])
     CppUnit::TextUi::TestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
     runner.run();
+    ALG_PROFILER_OUTPUT;
     exit(0);
 }
 
