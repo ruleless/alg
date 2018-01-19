@@ -25,6 +25,8 @@ class UTest : public CppUnit::TestFixture
     CPPUNIT_TEST(test_cache);
     CPPUNIT_TEST(test_replace_str);
     CPPUNIT_TEST(test_wildcard_match);
+    CPPUNIT_TEST(test_thread_env);
+    CPPUNIT_TEST(test_thread_env_1);
     CPPUNIT_TEST_SUITE_END();
 
   public:
@@ -50,6 +52,9 @@ class UTest : public CppUnit::TestFixture
     void test_replace_str();
 
     void test_wildcard_match();
+
+    void test_thread_env();
+    void test_thread_env_1();
 
   private:
     SortNode *mArray;

@@ -7,7 +7,7 @@
 #include "../src/alg_cache.h"
 #include "../src/alg_string.h"
 #include "../src/alg_profiler.h"
-
+#include "../src/alg_thread_env.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -378,6 +378,20 @@ void UTest::test_wildcard_match()
 
         CPPUNIT_ASSERT(ret == n->ret);
     }
+}
+
+void UTest::test_thread_env()
+{
+    char tid[16];
+
+    snprintf(tid, sizeof(tid), "%ld", (long)pthread_self());
+    set_thread_env("tid", tid);
+}
+
+void UTest::test_thread_env_1()
+{
+    CPPUNIT_ASSERT(get_thread_env("tid"));
+    printf("tid:%s\n", get_thread_env("tid"));
 }
 //--------------------------------------------------------------------------
 
