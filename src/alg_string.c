@@ -15,9 +15,9 @@ alg_replace(char *buf, int buflen, const char *substr, const char *newstr)
     int newstr_len = strlen(newstr);
 
     while ((ptr = strstr(preptr, substr)))
-    {        
+    {
         int len = strlen(ptr+substr_len) + 1;
-        
+
         if ((preptr-buf) + newstr_len + len > buflen)
         {
             return ptr;
@@ -66,5 +66,5 @@ alg_wildcard_match(const char *str, const char *pattern)
         {
             return FALSE;
         }
-    }    
+    }
 }

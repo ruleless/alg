@@ -24,16 +24,16 @@ UTest::UTest()
 
 UTest::~UTest()
 {}
-    
+
 void UTest::setUp()
 {
     ALG_PROFILER_START;
-    
+
     mBitset = bitset_new();
 
 #if 0
     srand(time(NULL));
-    mArraySz = 0;    
+    mArraySz = 0;
     while (mArraySz <= 0)
         mArraySz = rand()%65535;
 #else
@@ -42,7 +42,7 @@ void UTest::setUp()
 
     mArray = (SortNode *)malloc(mArraySz*sizeof(SortNode));
     for (int i = 0; i < mArraySz; ++i)
-    {               
+    {
         bitset_set(mBitset, i);
         mArray[i].key = rand();
         mArray[i].id = i;
@@ -50,13 +50,13 @@ void UTest::setUp()
 
     ALG_PROFILER_END;
 }
-    
+
 void UTest::tearDown()
 {
     ALG_PROFILER_START;
-    
+
     bitset_destroy(mBitset);
-    
+
     free(mArray);
     mArray = NULL;
     mArraySz = 0;
@@ -66,7 +66,7 @@ void UTest::tearDown()
 
 static int cmp_int(void *a, void *b)
 {
-    SortNode *sa = (SortNode *)a, *sb = (SortNode *)b;  
+    SortNode *sa = (SortNode *)a, *sb = (SortNode *)b;
     return sa->key - sb->key;
 }
 void UTest::inserction_sort()
@@ -88,7 +88,7 @@ void UTest::merge_sort()
     ALG_PROFILER_START;
     alg_merge_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
     ALG_PROFILER_END;
-    
+
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -102,7 +102,7 @@ void UTest::quick_sort()
     ALG_PROFILER_START;
     alg_quick_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
     ALG_PROFILER_END;
-    
+
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -116,7 +116,7 @@ void UTest::heap_sort()
     ALG_PROFILER_START;
     alg_heap_sort(mArray, sizeof(SortNode), mArraySz, cmp_int);
     ALG_PROFILER_END;
-    
+
     for (int i = 0; i < mArraySz-1; ++i)
     {
         CPPUNIT_ASSERT(mArray[i].key<=mArray[i+1].key);
@@ -145,7 +145,7 @@ static int array_to_test_list[] = {
     11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
     1, 2, 3, 31, 49, 34, 5, 9, 0, 1, 2,
     11, 21, 31, 313, 494, 343, 54, 95, 120, 19, 20,
-    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92, 
+    11, 22, 43, 931, 949, 134, 95, 89, 890, 71, 92,
 };
 void UTest::test_list()
 {
@@ -209,7 +209,7 @@ void UTest::test_list()
 }
 
 void UTest::test_bitset()
-{    
+{
     bitset *b = bitset_new();
     uint maxn = 1000000;
 
@@ -250,7 +250,7 @@ void UTest::test_dcache()
 
     char *ptr = NULL;
     int i = 0;
-    ssize_t sz = 0; 
+    ssize_t sz = 0;
     while ((sz = alg_disk_cache_peeksize(&dcache)) > 0)
     {
         ptr = (char *)malloc(sz);
@@ -264,7 +264,7 @@ static const char *s_test_str[] = {
     "test23",
     "fkadsfkjsdakfjasdjfkasjrieuwqrnkvnakfhijlkf5a4s5f74asf42asd1fasdf",
     "jfakdsiofruewiorewnckjdkfjasfjdnafkmnmnkjujwiue9q  k safjkdsajfkmmjjlklk",
-    "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试", 
+    "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
 };
 
 static int s_test_index = 0;
@@ -290,15 +290,15 @@ void UTest::test_cache()
     alg_cache_t *c = alg_cache_create(test_cache_handler, cache_alloc, cache_dealloc, NULL);
 
     c->memcache_maxsize = 10;
-    s_test_index = 0;   
-    
+    s_test_index = 0;
+
     for (int i = 0; i < (int)sizeof(s_test_str)/(int)sizeof(const char *); ++i)
     {
         alg_cache_push(c, s_test_str[i], strlen(s_test_str[i]));
     }
 
     alg_cache_flushall(c);
-    
+
     alg_cache_destroy(c);
 }
 
@@ -328,7 +328,7 @@ void UTest::test_replace_str()
     for (int i = 0; TESTING_CASE[i].source; i++)
     {
         n = &TESTING_CASE[i];
-        
+
         strncpy(buf, n->source, sizeof(buf)-1);
         buf[sizeof(buf)-1] = '\0';
 
@@ -339,8 +339,8 @@ void UTest::test_replace_str()
         {
             printf("src:%s\nbeing:%s", n->source, buf);
         }
-        
-        CPPUNIT_ASSERT(cmpret == 0);        
+
+        CPPUNIT_ASSERT(cmpret == 0);
     }
 
     strncpy(buf, "any word", sizeof(buf)-1);

@@ -29,11 +29,11 @@
 # pragma warning(disable:4217)
 
 # include <io.h>
-# include <time.h> 
+# include <time.h>
 // # define FD_SETSIZE 1024
-# ifndef WIN32_LEAN_AND_MEAN 
+# ifndef WIN32_LEAN_AND_MEAN
 #  include <winsock2.h> // 必须在windows.h之前包含， 否则网络模块编译会出错
-#  include <mswsock.h> 
+#  include <mswsock.h>
 #  define WIN32_LEAN_AND_MEAN
 # endif
 
@@ -47,7 +47,7 @@
 /* linux include */
 # include <errno.h>
 # include <float.h>
-# include <pthread.h>   
+# include <pthread.h>
 # include <fcntl.h>
 # include <unistd.h>
 # include <signal.h>
@@ -59,7 +59,7 @@
 # include <dirent.h>
 # include <net/if.h>
 # include <netinet/in.h>
-# include <netinet/tcp.h> 
+# include <netinet/tcp.h>
 # include <netinet/ip.h>
 # include <arpa/inet.h>
 # include <linux/types.h>

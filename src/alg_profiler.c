@@ -15,8 +15,8 @@ profiler_clock()
 {
     struct timeval time;
     profiler_clock_t value;
-    
-    gettimeofday(&time, NULL);    
+
+    gettimeofday(&time, NULL);
     value = ((profiler_clock_t)time.tv_sec) * 1000 + (time.tv_usec/1000);
     return value;
 }
@@ -25,10 +25,10 @@ static profiler_frame_t *
 get_stackframe()
 {
     static const int THREADS_NUM = sizeof(threads)/sizeof(threads[0]);
-    
+
     unsigned long tid = (unsigned long)pthread_self();
     profiler_frame_t *p = &threads[tid % THREADS_NUM];
-    
+
     for (; p != NULL; p = p->next)
     {
         if (p->tid == tid)
@@ -36,7 +36,7 @@ get_stackframe()
             return p;
         }
     }
-    
+
     profiler_frame_t *f = NULL;
 
     while (last_free_thread > threads && last_free_thread->tid != 0)
@@ -72,7 +72,7 @@ get_stackframe()
         }
     }
     p->tid = tid;
-    
+
     return p;
 }
 
@@ -110,7 +110,7 @@ get_profiler_node(const char *name)
 
 void
 alg_profiler_start(const char *name)
-{    
+{
     profiler_frame_t *f = NULL;
     profiler_node_t *n = NULL;
 
@@ -159,7 +159,7 @@ alg_profiler_end()
     curnode = &f->f[f->top--];
 
     pthread_mutex_lock(&profs_mut);
-    
+
     n = get_profiler_node(curnode->name);
 
     if (NULL == n)
@@ -193,7 +193,7 @@ alg_profiler_output()
         time_t nowtime;
         struct tm *timeinfo;
         char pathname[PROFILER_NAME_LEN];
-        
+
         time(&nowtime);
         timeinfo = localtime(&nowtime);
         snprintf(pathname, sizeof(pathname), "/tmp/prof_%04d%02d%02d_%02d%02d%02d",
@@ -212,7 +212,7 @@ alg_profiler_output()
 
     int i;
     profiler_node_t *n;
-    
+
     pthread_mutex_lock(&profs_mut);
     for (i = 0; i < profs_count; i++)
     {
@@ -222,9 +222,9 @@ alg_profiler_output()
         fprintf(s_proffp, "  min time    : %dms\n", n->min_time);
         fprintf(s_proffp, "  sum time    : %dms\n", n->sum_time);
         fprintf(s_proffp, "  average time: %dms\n", n->average_time);
-        fprintf(s_proffp, "  call times  : %d\n", n->call_times); 
+        fprintf(s_proffp, "  call times  : %d\n", n->call_times);
     }
     pthread_mutex_unlock(&profs_mut);
-    
+
     fprintf(s_proffp, "-------------------------------------------------\n");
 }

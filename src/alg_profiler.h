@@ -35,7 +35,7 @@ struct profiler_node_s {
     profiler_clock_t min_time;
     profiler_clock_t sum_time;
     profiler_clock_t average_time;
-    
+
     profiler_clock_t last_time;
     profiler_clock_t elapse_time;
 
@@ -65,7 +65,7 @@ struct profiler_frame_s {
 #define ALG_PROFILER_OUTPUT                                     \
     do {                                                        \
         static const profiler_clock_t FREQUENCY = 1000*60*2;    \
-        static profiler_clock_t lasttime = 0;    \
+        static profiler_clock_t lasttime = 0;                   \
         profiler_clock_t t = profiler_clock();                  \
         if (t >= lasttime + FREQUENCY) {                        \
             alg_profiler_output();                              \

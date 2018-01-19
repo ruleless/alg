@@ -14,11 +14,12 @@ extern "C" {
 #endif
 
 static inline void
-alg_swap(void *a, void *b, size_t nmem) {
-	void *tmp = alloca(nmem); assert(tmp);
-	memcpy(tmp, a, nmem);
-	memcpy(a, b, nmem);
-	memcpy(b, tmp, nmem);
+alg_swap(void *a, void *b, size_t nmem)
+{
+    void *tmp = alloca(nmem); assert(tmp);
+    memcpy(tmp, a, nmem);
+    memcpy(a, b, nmem);
+    memcpy(b, tmp, nmem);
 }
 
 #ifdef __cplusplus

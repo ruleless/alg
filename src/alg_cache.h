@@ -15,7 +15,7 @@ typedef int (*alg_cache_flush_handler_pt)(alg_cache_t *t, const void *data, size
 
 struct alg_cache_seg_s {
     struct list_head    node;
-    
+
     size_t              size;
     char               *data;
 };
