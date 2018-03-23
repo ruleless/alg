@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pthread.h>
+
 #include "alg_thread_env.h"
 
 #define MAX_ENV_COUNT 16
@@ -49,24 +54,48 @@ int set_thread_env(const char *key, const char *val)
         {
             return -1;
         }
-        memset(envs, NULL, sizeof(envs));
+        memset(envs, 0, sizeof(void *) * MAX_ENV_COUNT);
         pthread_setspecific(g_key, envs);
     }
 
     i = 0;
-    while (i < MAX_ENV_COUNT && envs[i]) i++;
+    while (i < MAX_ENV_COUNT && envs[i] && strcmp(key, envs[i]->key))
+        i++;
     if (MAX_ENV_COUNT == i)
         return -1;
 
-    envs[i] = (thread_env_t *)malloc(sizeof(thread_env_t));
     if (!envs[i])
     {
-        return -1;
+        envs[i] = (thread_env_t *)malloc(sizeof(thread_env_t));
+        if (!envs[i])
+        {
+            return -1;
+        }
     }
-    snprintf(envs[i]->key, sizeof(envs[i]->key), "%s", key);
-    snprintf(envs[i]->val, sizeof(envs[i]->val), "%s", val);
+    if (snprintf(envs[i]->key, sizeof(envs[i]->key), "%s", key) < 0)
+        return -1;
+    if (snprintf(envs[i]->val, sizeof(envs[i]->val), "%s", val) < 0)
+        return -1;
 
     return 0;
+}
+
+void clear_thread_env()
+{
+    thread_env_t **envs = NULL;
+    int i;
+
+    pthread_once(&g_key_once, init_thread_key);
+    envs = pthread_getspecific(g_key);
+    if (!envs)
+    {
+        return;
+    }
+
+    for (i = 0; i < MAX_ENV_COUNT && envs[i]; i++)
+    {
+        *(envs[i]->val) = '\0';
+    }
 }
 
 const char *get_thread_env(const char *key)
@@ -81,8 +110,7 @@ const char *get_thread_env(const char *key)
         return NULL;
     }
 
-    i = 0;
-    while (i < MAX_ENV_COUNT && envs[i])
+    for (i = 0; i < MAX_ENV_COUNT && envs[i]; i++)
     {
         if (!strcmp(envs[i]->key, key))
         {
