@@ -52,12 +52,12 @@ struct profiler_frame_s {
 };
 
 #ifdef _ALG_PROFILER
-#define ALG_PROFILER_START                                              \
-    do {                                                                \
-        char profname[PROFILER_NAME_LEN];                               \
-        snprintf(profname, sizeof(profname), \
-                 "%s line:%d", __func__, __LINE__);                     \
-        alg_profiler_start(profname);                                   \
+#define ALG_PROFILER_START                          \
+    do {                                            \
+        char profname[PROFILER_NAME_LEN];           \
+        snprintf(profname, sizeof(profname),        \
+                 "%s line:%d", __func__, __LINE__); \
+        alg_profiler_start(profname);               \
     } while(0)
 
 #define ALG_PROFILER_END alg_profiler_end()

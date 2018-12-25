@@ -1,5 +1,5 @@
-#ifndef __ALG_COMMON_H__
-#define __ALG_COMMON_H__
+#ifndef __ALG_PLATFORM_H__
+#define __ALG_PLATFORM_H__
 
 /******************************************************************/
 /* common include */
@@ -183,21 +183,9 @@
 # define MAX_PATH 260
 #endif
 
-#ifndef max
-# define max(a, b) ((b) > (a) ? (b) : (a))
-#endif
-#ifndef min
-# define min(a, b) ((b) < (a) ? (b) : (a))
-#endif
-
 #define BOOL  int
 #define TRUE  1
 #define FALSE 0
-
-#ifndef container_of
-# define container_of(ptr, type, member)                    \
-    (type *)((char *)(ptr) - (char *)&((type *)0)->member)
-#endif
 
 /* 导入导出定义 */
 #if PLATFORM == PLATFORM_WIN32
@@ -370,4 +358,4 @@ typedef int                 SOCKET;
 #endif // #if COMPILER != COMPILER_GNU
 /******************************************************************/
 
-#endif // __ALG_COMMON_H__
+#endif // __ALG_PLATFORM_H__

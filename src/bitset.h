@@ -1,7 +1,12 @@
 #ifndef __ALG_BITSET_H__
 #define __ALG_BITSET_H__
 
-#include "alg_common.h"
+#ifndef MAX
+# define MAX(a, b) ((b) > (a) ? (b) : (a))
+#endif
+#ifndef MIN
+# define MIN(a, b) ((b) < (a) ? (b) : (a))
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +15,7 @@ extern "C" {
 struct bitset;
 typedef struct bitset bitset;
 
-bitset* bitset_new();
+bitset *bitset_new();
 void bitset_destroy(bitset *b);
 
 int bitset_set(bitset *b, uint n);

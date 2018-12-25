@@ -1,5 +1,10 @@
 #include "alg_cache.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
 #define MAX_MEM_CACHE_SIZE  256*1024
 
 alg_cache_t *
@@ -11,8 +16,7 @@ alg_cache_create(alg_cache_flush_handler_pt h,
     alg_cache_t *cache;
 
     cache = alloc(alloc_ctx, sizeof(alg_cache_t));
-    if (NULL == cache)
-    {
+    if (NULL == cache) {
         return NULL;
     }
 
@@ -39,16 +43,13 @@ alg_cache_destroy(alg_cache_t *cache)
 {
     struct list_head  *pos, *tmp;
     alg_cache_seg_t   *seg;
-    void            *(*alloc)(void *alloc_ctx, size_t size);
     void             (*dealloc)(void *alloc_ctx, void *m);
     void              *alloc_ctx;
 
-    alloc = cache->alloc;
     dealloc = cache->dealloc;
     alloc_ctx = cache->alloc_ctx;
 
-    list_for_each_safe(pos, tmp, &cache->memcache)
-    {
+    list_for_each_safe(pos, tmp, &cache->memcache) {
         seg = list_entry(pos, alg_cache_seg_t, node);
 
         dealloc(alloc_ctx, seg->data);
@@ -70,13 +71,11 @@ alg_cache_push(alg_cache_t *cache, const void *data, size_t size)
     /* cache in file */
 
     if (cache->memcache_size + size > cache->memcache_maxsize
-        || cache->dcache_size)
-    {
+        || cache->dcache_size) {
 
         rv = alg_disk_cache_write(&cache->dcache, data, size);
 
-        if (rv == size)
-        {
+        if (rv == size) {
             cache->dcache_size += size;
             return 1;
         }
@@ -87,14 +86,12 @@ alg_cache_push(alg_cache_t *cache, const void *data, size_t size)
     /* cache in memory */
 
     seg = (alg_cache_seg_t *)cache->alloc(cache->alloc_ctx, sizeof(alg_cache_seg_t));
-    if (NULL == seg)
-    {
+    if (NULL == seg) {
         return 0;
     }
 
     seg->data = (char *)cache->alloc(cache->alloc_ctx, size);
-    if (NULL == seg->data)
-    {
+    if (NULL == seg->data) {
         cache->dealloc(cache->alloc_ctx, seg);
         return 0;
     }
@@ -116,12 +113,10 @@ alg_cache_flushall(alg_cache_t *cache)
 
     /* flush data in memory */
 
-    list_for_each_safe(pos, tmp, &cache->memcache)
-    {
+    list_for_each_safe(pos, tmp, &cache->memcache) {
         seg = list_entry(pos, alg_cache_seg_t, node);
 
-        if (cache->handler(cache, seg->data, seg->size))
-        {
+        if (cache->handler(cache, seg->data, seg->size)) {
             list_del(&seg->node);
             cache->dealloc(cache->alloc_ctx, seg->data);
             cache->dealloc(cache->alloc_ctx, seg);
@@ -132,15 +127,13 @@ alg_cache_flushall(alg_cache_t *cache)
 
     /* flush data in file */
 
-    while ((sz = alg_disk_cache_peeksize(&cache->dcache)))
-    {
+    while ((sz = alg_disk_cache_peeksize(&cache->dcache))) {
         ptr = (char *)cache->alloc(cache->alloc_ctx, sz);
 
         assert(ptr && "alg_cache_flushall()  alloc failed!");
         assert(alg_disk_cache_read(&cache->dcache, ptr, sz) == sz);
 
-        if (cache->handler(cache, ptr, sz))
-        {
+        if (cache->handler(cache, ptr, sz)) {
             cache->dcache_size -= sz;
             cache->dealloc(cache->alloc_ctx, ptr);
         } else {

@@ -10,6 +10,7 @@ static profiler_node_t profs[MAX_PROFILER_NUM];
 static int profs_count;
 static pthread_mutex_t profs_mut = PTHREAD_MUTEX_INITIALIZER;
 
+
 profiler_clock_t
 profiler_clock()
 {
@@ -29,43 +30,39 @@ get_stackframe()
     unsigned long tid = (unsigned long)pthread_self();
     profiler_frame_t *p = &threads[tid % THREADS_NUM];
 
-    for (; p != NULL; p = p->next)
-    {
-        if (p->tid == tid)
-        {
+    for (; p != NULL; p = p->next) {
+        if (p->tid == tid) {
             return p;
         }
     }
 
     profiler_frame_t *f = NULL;
 
-    while (last_free_thread > threads && last_free_thread->tid != 0)
+    while (last_free_thread > threads && last_free_thread->tid != 0) {
         last_free_thread--;
-    if (0 == last_free_thread->tid)
+    }
+    if (0 == last_free_thread->tid) {
         f = last_free_thread;
+    }
 
-    if (NULL == f)
-    {
+    if (NULL == f) {
         PROF_LOG("found no space for this thread!");
         return NULL;
     }
 
     p = &threads[tid % THREADS_NUM];
-    if (p->tid != 0 && p->next != NULL)
-    {
+    if (p->tid != 0 && p->next != NULL) {
         profiler_frame_t *other = &threads[p->tid % THREADS_NUM];
 
-        if (other != p)
-        {
-            while (other->next != p)
+        if (other != p) {
+            while (other->next != p) {
                 other = other->next;
+            }
 
             other->next = f;
             memcpy(f, p, sizeof(*f));
             p->next = NULL;
-        }
-        else
-        {
+        } else {
             f->next = p->next;
             p->next = f;
             p = f;
@@ -82,16 +79,13 @@ get_profiler_node(const char *name)
     int i;
     profiler_node_t *n;
 
-    for (i = 0; i < profs_count; i++)
-    {
-        if (strcmp(name, profs[i].name) == 0)
-        {
+    for (i = 0; i < profs_count; i++) {
+        if (strcmp(name, profs[i].name) == 0) {
             return &profs[i];
         }
     }
 
-    if (sizeof(profs) / sizeof(profs[0]) == profs_count)
-    {
+    if (sizeof(profs) / sizeof(profs[0]) == profs_count) {
         return NULL;
     }
 
@@ -117,15 +111,13 @@ alg_profiler_start(const char *name)
     pthread_mutex_lock(&threads_mut);
 
     f = get_stackframe();
-    if (NULL == f)
-    {
+    if (NULL == f) {
         pthread_mutex_unlock(&threads_mut);
         PROF_LOG("found no space to start profiler!");
         return;
     }
 
-    if (sizeof(f->f) / sizeof(f->f[0]) == f->top)
-    {
+    if (sizeof(f->f) / sizeof(f->f[0]) == f->top) {
         pthread_mutex_unlock(&threads_mut);
         PROF_LOG("stack overflow!");
         return;
@@ -148,8 +140,7 @@ alg_profiler_end()
     pthread_mutex_lock(&threads_mut);
 
     f = get_stackframe();
-    if (NULL == f || 0 == f->top)
-    {
+    if (NULL == f || 0 == f->top) {
         pthread_mutex_unlock(&threads_mut);
         PROF_LOG("no stackframe found or no refer profiler node!");
         return;
@@ -162,8 +153,7 @@ alg_profiler_end()
 
     n = get_profiler_node(curnode->name);
 
-    if (NULL == n)
-    {
+    if (NULL == n) {
         pthread_mutex_unlock(&profs_mut);
         pthread_mutex_unlock(&threads_mut);
         PROF_LOG("found no profiler analysis node");
@@ -188,8 +178,7 @@ alg_profiler_output()
 {
     static FILE *s_proffp = NULL;
 
-    if (NULL == s_proffp)
-    {
+    if (NULL == s_proffp) {
         time_t nowtime;
         struct tm *timeinfo;
         char pathname[PROFILER_NAME_LEN];
@@ -201,8 +190,7 @@ alg_profiler_output()
                  timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
 
         s_proffp = fopen(pathname, "at");
-        if (NULL == s_proffp)
-        {
+        if (NULL == s_proffp) {
             PROF_LOG("open file failed! pathname=%s", pathname);
             return;
         }
@@ -214,8 +202,7 @@ alg_profiler_output()
     profiler_node_t *n;
 
     pthread_mutex_lock(&profs_mut);
-    for (i = 0; i < profs_count; i++)
-    {
+    for (i = 0; i < profs_count; i++) {
         n = &profs[i];
         fprintf(s_proffp, "==>> %s\n", n->name);
         fprintf(s_proffp, "  max time    : %dms\n", n->max_time);

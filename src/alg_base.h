@@ -1,7 +1,10 @@
 #ifndef __ALG_BASE_H__
 #define __ALG_BASE_H__
 
-#include "alg_common.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 #define ROUND_SHIFT   3
 #define ROUND_SIZE    (((size_t)1) << ROUND_SHIFT)
