@@ -1,8 +1,9 @@
 ROOTDIR:= ..
 
-CXXFLAGS+= -D_ALG_PROFILER
-LDFLAGS+= -lrt -lcppunit -L $(ROOTDIR)/lib -lalg
+CFLAGS+= -D_ALG_PROFILER -I../
+CXXFLAGS+= -D_ALG_PROFILER -I../
+LDFLAGS+= -L $(ROOTDIR)/lib -lalg -lgtest -lpthread
 
-TARGET:= test.out
+TARGET:= unit_test.out
 
 include $(ROOTDIR)/build.mak

@@ -18,10 +18,10 @@ typedef struct bitset bitset;
 bitset *bitset_new();
 void bitset_destroy(bitset *b);
 
-int bitset_set(bitset *b, uint n);
-void bitset_clear(bitset *b, uint n);
+int bitset_set(bitset *b, unsigned int n);
+void bitset_clear(bitset *b, unsigned int n);
 
-int bitset_exists(bitset *b, uint n);
+int bitset_exists(bitset *b, unsigned int n);
 
 #ifdef __cplusplus
 }
